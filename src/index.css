@@ -1,0 +1,1507 @@
+/* Polices auto-hébergées : les fichiers sont copiés dans le build par
+   Vite, aucun appel n'est fait aux serveurs de Google. Cela évite un
+   transfert d'adresse IP vers un tiers — le point qui a valu à des
+   sites français des mises en demeure au titre du RGPD. */
+/* Sous-ensembles latins uniquement : les imports génériques
+   embarquent aussi le cyrillique, le grec et le vietnamien, jamais
+   servis à un visiteur francophone ou anglophone.
+
+   Bodoni Moda pour les titres, Inter pour le texte courant — la
+   direction artistique reprise du gabarit Framer de référence
+   (contraste haute couture du Bodoni sur les titres, lisibilité
+   neutre de l'Inter pour le corps de texte). */
+@import '@fontsource/inter/latin-400.css';
+@import '@fontsource/inter/latin-500.css';
+@import '@fontsource/inter/latin-600.css';
+@import '@fontsource/bodoni-moda/latin-400.css';
+@import '@fontsource/bodoni-moda/latin-500.css';
+@import '@fontsource/bodoni-moda/latin-400-italic.css';
+/* Vraie fonte pour les mots en italique gras des titres (au lieu d'un gras fabriqué). */
+@import '@fontsource/bodoni-moda/latin-600-italic.css';
+/* Arapey pour les liens de la navbar : un serif raffiné, plus
+   discret que le Bodoni Moda des titres, réservé à cet usage précis
+   pour donner aux liens un grain distinct de celui du corps de
+   texte (Inter). */
+@import '@fontsource/arapey/latin-400.css';
+
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import './home-editorial.css';
+
+/* ── Hero animations ─────────────────────────────────────────────── */
+@keyframes heroKenBurns {
+  from { transform: scale(1.07); }
+  to   { transform: scale(1.0); }
+}
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes heroFadeLine {
+  from { opacity: 0; transform: scaleX(0.4); }
+  to   { opacity: 1; transform: scaleX(1); }
+}
+.hero-ken-burns  { animation: heroKenBurns 10s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+.hero-eyebrow    { animation: heroFadeUp   0.7s ease-out 0.4s both; }
+.hero-title      { animation: heroFadeUp   1.0s ease-out 0.65s both; }
+.hero-divider    { animation: heroFadeLine 0.6s ease-out 1.0s both; }
+.hero-sub        { animation: heroFadeUp   0.7s ease-out 1.15s both; }
+.hero-cta        { animation: heroFadeUp   0.7s ease-out 1.35s both; }
+.hero-scroll-ind { animation: heroFadeUp   0.7s ease-out 1.7s both; }
+
+/* Titre du hero, révélé mot par mot plutôt qu'en bloc — chaque mot
+   glisse depuis le bas de sa propre fenêtre masquée
+   (`.hero-title__mask` en `overflow: hidden`), avec un décalage
+   croissant d'un mot à l'autre (`--word-delay`, posé en style inline
+   par mot dans le composant). Le principe vient d'un gabarit de
+   référence où le H1 est découpé en `<span>` par mot ; ici chaque
+   mot obtient en plus sa propre fenêtre de masquage, pour que le
+   glissement reste invisible en dehors du mot lui-même. */
+.hero-title__mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+.hero-title__word {
+  display: inline-block;
+  animation: heroWordUp 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.65s + var(--word-delay, 0s));
+}
+@keyframes heroWordUp {
+  from { opacity: 0; transform: translateY(115%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Indicateur de défilement : un trait qui parcourt un rail vertical,
+   de haut en bas, en continu. `top`/`bottom` sont animés plutôt que
+   `height` pour que le trait entre par le haut, traverse, puis sorte
+   par le bas — un simple étirement de hauteur donnerait l'impression
+   qu'il pousse depuis le haut sans jamais partir. */
+.scroll-rail {
+  position: relative;
+  display: block;
+  /* Filet d'un pixel, allongé à 120 px : un trait, pas une barre. Le
+     rail de fond est presque effacé (8 %) pour que seul le segment
+     lumineux se remarque.
+
+     À 1 px, le trait pouvait disparaître sur les écrans à densité
+     fractionnaire, où le navigateur le rend sur un demi-pixel — d'où
+     l'épaisseur de 3 px retenue auparavant. Le `transform` ci-dessous
+     règle la question autrement : il force le navigateur à composer le
+     trait sur sa propre couche, où il est rendu net quelle que soit la
+     densité. */
+  width: 1px;
+  height: 120px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  transform: scaleX(1);
+}
+
+.scroll-rail__line {
+  position: absolute;
+  left: 0;
+  width: 1px;
+  /* Dégradé plutôt qu'un blanc plein : le segment naît et s'éteint par
+     ses extrémités, ce qui l'affine encore visuellement et lui évite
+     l'aspect « barre de progression ». */
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.9) 35%,
+    rgba(255, 255, 255, 0.9) 65%,
+    rgba(255, 255, 255, 0)
+  );
+  opacity: 1;
+  animation: scrollRail 3.4s cubic-bezier(0.55, 0, 0.45, 1) infinite;
+}
+
+@keyframes scrollRail {
+  /* Le trait descend, s'immobilise brièvement à pleine longueur, puis
+     s'échappe par le bas. La pause centrale évite l'effet de
+     va-et-vient d'une boucle sans temps mort. */
+  0%   { top: 0;    bottom: 100%; }
+  40%  { top: 0;    bottom: 0;    }
+  60%  { top: 0;    bottom: 0;    }
+  100% { top: 100%; bottom: 0;    }
+}
+@plugin "@tailwindcss/typography";
+
+/* ── Apparitions au défilement ───────────────────────────────────────
+   `useScrollAnimations.ts` pose la classe `.in-view` sur un élément au
+   moment précis où il entre à l'écran (son haut passe sous les 91 % de
+   la hauteur de l'écran). Chaque effet n'est qu'une transition CSS
+   entre l'état caché et cet état visible.
+
+   Pourquoi les apparitions « surgissaient » avant (v9) :
+   — un minuteur de secours révélait TOUS les éléments 1,2 s après le
+     chargement, même ceux situés tout en bas de la page : quand on y
+     arrivait, il n'y avait plus rien à animer ;
+   — un second filet, en CSS, forçait l'état final au bout de 3,2 s et
+     coupait net les transitions encore en cours ;
+   — la courbe `ease-in-out` sur 1 s démarrait très lentement : le
+     texte restait invisible un instant, puis apparaissait d'un coup.
+
+   Désormais l'état caché n'existe que si le script a démarré : la
+   classe `js-reveal` est posée sur <html> avant le premier affichage
+   (index.html) et retirée d'office si l'application ne s'est pas
+   lancée au bout de 4 s. Sans script, tout est visible ; avec, chaque
+   élément s'anime quand on l'atteint, et seulement à ce moment-là.
+
+   Une seule famille de courbes : sortie rapide, arrivée douce
+   (cubic-bezier(.16, 1, .3, 1)). Le mouvement commence dès le
+   déclenchement, il n'y a plus de temps mort. */
+
+:root {
+  --reveal-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --reveal-rise: 22px;
+  --reveal-time: 900ms;
+}
+@media (max-width: 767px) {
+  :root { --reveal-rise: 14px; --reveal-time: 700ms; }
+}
+
+/* Délai d'échelonnement, posé en style inline : `--reveal-delay: 120ms`. */
+.reveal-fade,
+.reveal-section,
+.reveal-mask,
+.reveal-mask-left,
+.lift > *,
+.gallery-tile img {
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Fondu montant : l'effet par défaut (titres secondaires, textes, liens). */
+.reveal-fade,
+.reveal-section {
+  transition-property: opacity, transform;
+  transition-duration: calc(var(--reveal-time) * 0.75), var(--reveal-time);
+  transition-timing-function: ease-out, var(--reveal-ease);
+}
+.js-reveal .reveal-fade:not(.in-view) {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-rise), 0);
+}
+.js-reveal .reveal-section:not(.in-view) {
+  opacity: 0;
+  transform: translate3d(0, calc(var(--reveal-rise) * 1.6), 0);
+}
+
+/* Titre qui monte depuis un cache. */
+.lift {
+  overflow: hidden;
+}
+.lift > * {
+  display: inline-block;
+  transition: transform 1050ms var(--reveal-ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js-reveal .lift > *:not(.in-view) {
+  transform: translate3d(0, 108%, 0);
+}
+
+/* Image qui se dévoile : léger zoom arrière et fondu (sans couper
+   l'image en deux, ce qui avait été écarté). */
+.reveal-mask,
+.reveal-mask-left {
+  transition-property: opacity, transform;
+  transition-duration: 700ms, 1300ms;
+  transition-timing-function: ease-out, var(--reveal-ease);
+}
+.js-reveal .reveal-mask:not(.in-view),
+.js-reveal .reveal-mask-left:not(.in-view) {
+  opacity: 0;
+  transform: scale(1.06);
+}
+
+/* Galerie : chaque vignette entre zoomée et assombrie, puis s'ouvre. */
+.gallery-tile img {
+  transition: transform 1150ms var(--reveal-ease), filter 1150ms var(--reveal-ease);
+}
+.js-reveal .gallery-tile img:not(.in-view) {
+  transform: scale(1.16);
+  filter: brightness(0.35) saturate(0.85);
+}
+.gallery-tile__glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(62, 41, 32, 0.28), transparent 55%);
+  opacity: 0;
+  transition: opacity 500ms ease;
+  pointer-events: none;
+}
+.gallery-tile:hover .gallery-tile__glow {
+  opacity: 1;
+}
+
+/* Élément déjà dépassé quand la page s'affiche (retour en arrière,
+   rechargement au milieu de la page) : visible tout de suite, sans
+   rejouer d'animation. */
+.reveal-instant,
+.reveal-instant * {
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+}
+
+/* Images chargées à la demande : elles se fondent à leur arrivée au
+   lieu de surgir quand le fichier finit de se télécharger. Une
+   animation plutôt qu'une transition, pour ne pas écraser les
+   transitions propres à chaque image (zoom au survol, parallaxe). */
+@keyframes ltsImgIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.js-reveal img[loading]:not([alt=""]):not(.lts-hero2__bg img):not(.is-loaded) {
+  opacity: 0;
+}
+.js-reveal img[loading]:not([alt=""]):not(.lts-hero2__bg img).is-loaded {
+  animation: ltsImgIn 700ms ease-out backwards;
+}
+
+/* Grain photographique : retiré (voir v8). */
+.hero-grain::after {
+  content: none;
+}
+
+/* Lignes de la carte : léger glissement du nom au survol. */
+.menu-row {
+  transition: background-color 400ms ease;
+}
+.menu-row:hover {
+  background-color: hsl(var(--brand) / 0.06);
+}
+.menu-row .menu-row__name {
+  transition: transform 500ms var(--reveal-ease), color 400ms ease;
+}
+.menu-row:hover .menu-row__name {
+  transform: translateX(8px);
+  color: hsl(var(--brand-strong));
+}
+
+/* Grandes photos éditoriales : zoom très lent et léger éclaircissement
+   au survol. */
+.photo-breathe {
+  position: relative;
+  overflow: hidden;
+}
+.photo-breathe img {
+  transition: transform 2200ms var(--reveal-ease), filter 1200ms ease;
+}
+.photo-breathe:hover img {
+  transform: scale(1.05);
+  filter: brightness(1.04) saturate(1.05);
+}
+.photo-breathe::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: hsl(var(--background));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 900ms ease;
+}
+.photo-breathe:hover::after {
+  opacity: 0.12;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-fade, .reveal-section, .reveal-mask, .reveal-mask-left,
+  .lift > *, .gallery-tile img, .photo-breathe img, .photo-breathe::after {
+    transition: none !important;
+  }
+  .js-reveal img[loading]:not([alt=""]):not(.lts-hero2__bg img).is-loaded {
+    animation: none;
+  }
+  .photo-breathe:hover img {
+    transform: none;
+    filter: none;
+  }
+}
+
+/* Ombre portée discrète sur le texte blanc posé directement sur une
+   photo (hero, navbar en thème sombre) : depuis la suppression du
+   voile d'assombrissement, certaines photos claires (salle dorée,
+   table en plein soleil...) ne garantissent plus assez de contraste
+   à elles seules. Une ombre légère règle le problème localement,
+   sans réintroduire d'aplat sombre sur l'image. */
+.hero-text-shadow {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45), 0 1px 16px rgba(0, 0, 0, 0.25);
+}
+
+/* Trait qui se déploie de gauche à droite sous le libellé d'un
+   bouton au survol — même grammaire que les liens de navigation. */
+.btn-underline {
+  position: relative;
+}
+
+.btn-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+a:hover .btn-underline::after,
+button:hover .btn-underline::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.premium-button {
+  box-shadow: 0 5px 16px rgba(62, 41, 32, 0.08);
+}
+
+.premium-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 22px rgba(62, 41, 32, 0.12);
+}
+
+.nav-link-premium {
+  position: relative;
+}
+
+.nav-link-premium::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  /* Au repos, l'origine est à droite : quand le trait disparaît, il
+     se retire vers la droite au lieu de revenir sur son point de
+     départ. Combiné à l'origine gauche au survol ci-dessous, le trait
+     traverse le mot de gauche à droite à l'aller comme au retour. */
+  transform-origin: right;
+  /* Ralenti à 900 ms, au rythme du changement de teinte du lien
+     lui-même : le trait accompagne le mot au lieu de le devancer. */
+  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 0.65;
+}
+
+.nav-link-premium:hover::after,
+.nav-link-premium:focus-visible::after {
+  transform-origin: left;
+  transform: scaleX(1);
+}
+
+.mobile-menu-panel {
+  isolation: isolate;
+}
+
+.premium-card {
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 700ms ease, background-color 500ms ease;
+}
+
+.premium-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 35px rgba(62, 41, 32, 0.08);
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.7rem;
+  height: 2.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 400ms ease,
+              border-color 400ms ease,
+              color 400ms ease,
+              box-shadow 400ms ease;
+}
+
+.social-link:hover,
+.social-link:focus-visible {
+  transform: translateY(-2px);
+  background: rgba(183, 119, 69, 0.14);
+  border-color: rgba(183, 119, 69, 0.5);
+  color: hsl(var(--background));
+  box-shadow: 0 10px 24px rgba(62, 41, 32, 0.18);
+}
+
+.social-link:active {
+  transform: translateY(0);
+}
+
+.footer-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.footer-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.footer-brand-mark {
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 400ms ease,
+              background-color 400ms ease;
+}
+
+.footer-brand:hover .footer-brand-mark,
+.footer-brand:focus-within .footer-brand-mark {
+  transform: translateY(-2px) rotate(-2deg);
+  background: rgba(183, 119, 69, 0.08);
+  border-color: rgba(183, 119, 69, 0.5);
+}
+
+.footer-cta-link {
+  position: relative;
+  border-radius: var(--radius);
+  transition: color 320ms ease, transform 320ms ease, background-color 320ms ease, box-shadow 320ms ease;
+}
+
+/* Effet de survol du footer : un simple éclaircissement de la
+   couleur, sans trait qui se déploie — le soulignement au survol
+   reste propre au bouton « Réserver » de la navigation (voir
+   ReserveButton.tsx et cta.ts). */
+.footer-link,
+.footer-meta-link {
+  position: relative;
+  color: inherit;
+  transition: color 320ms ease;
+}
+
+.footer-link:hover,
+.footer-link:focus-visible,
+.footer-meta-link:hover,
+.footer-meta-link:focus-visible {
+  color: hsl(var(--background));
+}
+
+.footer-cta-link {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 10px 18px rgba(62, 41, 32, 0.12);
+}
+
+.footer-cta-link:hover,
+.footer-cta-link:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(62, 41, 32, 0.16);
+}
+
+.footer-cta-link .group\/explore\:translate-x-0,
+.footer-cta-link:hover .group\/explore\:translate-x-0,
+.footer-cta-link:focus-visible .group\/explore\:translate-x-0 {
+  transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .social-link,
+  .footer-brand-mark,
+  .footer-link,
+  .footer-meta-link,
+  .footer-cta-link {
+    transition: none;
+  }
+
+  .social-link:hover,
+  .social-link:focus-visible,
+  .footer-link:hover,
+  .footer-link:focus-visible,
+  .footer-meta-link:hover,
+  .footer-meta-link:focus-visible,
+  .footer-cta-link:hover,
+  .footer-cta-link:focus-visible {
+    transform: none;
+  }
+}
+
+.booking-loader-mark {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border: 1px solid rgba(183, 119, 69, 0.22);
+  border-radius: 9999px;
+  /* Pas de pulsation : ce cercle est superposé au module de
+     réservation pendant son installation. Toute animation à cet
+     endroit précis attire l'œil au moment où le widget se cale, et
+     donne l'impression que c'est LUI qui bouge. Le cercle reste
+     immobile ; l'icône qu'il contient tourne, ce qui suffit à
+     indiquer un chargement en cours. */
+}
+
+.floating-reserve {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  /* Au-dessus du contenu, mais sous la bannière cookies (z-60) et la
+     modale de réservation (z-100). */
+  z-index: 45;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.1rem;
+  color: hsl(var(--background));
+  /* Terracotta plein, et non plus le brun foncé du thème.
+
+     Le brun foncé (--foreground) est EXACTEMENT la couleur du pied de
+     page : quand le bouton arrivait au-dessus de celui-ci, il devenait
+     un rectangle sombre sur fond sombre — visible « très légèrement »,
+     puis plus du tout. Le terracotta se détache aussi bien de l'ivoire
+     des pages que du brun du pied de page.
+
+     L'ombre est renforcée et légèrement teintée : elle décolle le
+     bouton du fond quel qu'il soit. */
+  /* Marron encore assombri : 26 % de luminosité tirait toujours un peu
+     vers le terracotta. À 17 %, le brun devient profond et feutré,
+     plus proche du brun du pied de page tout en restant net devant
+     lui grâce à l'ombre portée. Le texte ivoire y gagne encore en
+     lisibilité (10,8:1). */
+  background: hsl(18 32% 12%);
+  box-shadow: 0 14px 34px rgba(62, 41, 32, 0.28);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 600ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1), background-color 400ms ease;
+}
+
+.floating-reserve-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.floating-reserve:hover {
+  /* Même teinte, éclaircie : la réaction est franche sans introduire
+     de couleur étrangère à la palette. */
+   background: hsl(18 32% 22%);
+   transform: translateY(-3px);
+}
+
+/* ── Bouton « remonter en haut » ───────────────────────────────────
+   Rend concret et visible le point 2 de la référence — un défilement
+   déclenché par un clic, plus vif que le glissé libre à la molette
+   (voir handleBackToTop dans Layout.tsx). Sans lui, cette distinction
+   de vitesse restait cantonnée à deux boutons obscurs, imperceptible
+   en usage normal.
+
+   Cerclé et non pastillé plein : contrairement au bouton de
+   réservation, il n'a pas de texte à porter, un simple cercle suffit
+   à le désigner comme actionnable sans qu'il ne rivalise visuellement
+   avec lui. Posé en bas à GAUCHE, précisément pour ne jamais se
+   superposer au bouton de réservation, toujours à droite. */
+.back-to-top {
+  position: fixed;
+  left: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 45;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  border: 1px solid hsl(var(--brand) / 0.5);
+  color: hsl(18 32% 18%);
+  background: hsl(var(--background) / 0.92);
+  box-shadow: 0 10px 26px rgba(62, 41, 32, 0.16);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 600ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 400ms ease, border-color 400ms ease;
+}
+
+.back-to-top-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.back-to-top:hover {
+  background: hsl(18 32% 12%);
+  border-color: hsl(18 32% 12%);
+  color: hsl(var(--background));
+  transform: translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top {
+    transition: opacity 200ms ease;
+  }
+}
+
+/* Réservés au bureau — les deux boutons flottants.
+
+   Sur un téléphone, deux pastilles qui suivent le doigt en permanence
+   (l'une pour remonter, l'autre pour réserver) prennent une part
+   disproportionnée d'un écran déjà étroit : elles finissent par
+   couvrir une partie du contenu qu'elles sont censées accompagner,
+   surtout au-dessus du pouce, là où on tape le plus.
+
+   La réservation reste à un geste près sur mobile — elle est déjà
+   dans le panneau de menu plein écran (voir Navbar.tsx) — retirer sa
+   version flottante n'enlève donc aucune fonctionnalité, seulement de
+   l'encombrement visuel permanent.
+
+   `display: none` plutôt qu'une classe utilitaire Tailwind du type
+   `hidden md:flex` posée dans le JSX : les règles ci-dessus
+   (`.back-to-top`, `.floating-reserve`) sont écrites en dehors de
+   tout `@layer`, donc prioritaires sur N'IMPORTE QUELLE classe
+   Tailwind par construction des couches CSS — une classe utilitaire
+   aurait donc perdu ce bras de fer et n'aurait eu aucun effet. En
+   restant nous-mêmes dans une règle CSS classique, on gagne
+   normalement, par l'ordre des déclarations. */
+@media (max-width: 767px) {
+  .back-to-top,
+  .floating-reserve {
+    display: none;
+  }
+}
+
+/* ── Barre de défilement ──────────────────────────────────────────
+   La barre native (grise, large, avec ses flèches) est le dernier
+   élément du navigateur à trancher avec l'habillage du site. On la
+   redessine aux couleurs de la maison : rail ivoire à peine plus
+   soutenu que le fond, curseur terracotta discret qui s'affirme au
+   survol.
+
+   Deux syntaxes cohabitent, sans doublon possible : `::-webkit-*`
+   pour Chrome, Edge et Safari, `scrollbar-color` / `scrollbar-width`
+   pour Firefox — chaque navigateur ignore celle qu'il ne comprend
+   pas. On ne descend pas sous 10 px de large : en dessous, le
+   curseur devient difficile à attraper à la souris, et le confort
+   prime sur la finesse.
+
+   Volontairement laissé de côté : masquer complètement la barre.
+   Elle indique où l'on se trouve dans une page longue — la retirer
+   pour l'esthétique coûterait plus qu'elle ne rapporte. */
+
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--brand) / 0.55) hsl(var(--card));
+}
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--card));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--brand) / 0.5);
+  border-radius: 999px;
+  /* La bordure transparente creuse le curseur vers l'intérieur : il
+     paraît plus fin que le rail sans réduire la zone cliquable. */
+  border: 2px solid hsl(var(--card));
+  transition: background-color 300ms ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--brand-strong, var(--brand)) / 0.85);
+}
+
+/* Les flèches d'extrémité, vestige de Windows, alourdissent la barre
+   et ne sont plus utilisées par personne. */
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+::-webkit-scrollbar-corner {
+  background: hsl(var(--card));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::-webkit-scrollbar-thumb {
+    transition: none;
+  }
+}
+
+/* ── Visionneuse plein écran ──────────────────────────────────────
+   Voir Lightbox.tsx. Fond très sombre mais pas noir pur (le noir
+   absolu durcit les photos aux tons chauds), image centrée, chrome
+   réduit au strict nécessaire — la photo doit occuper le regard, pas
+   l'interface qui l'entoure. */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3.5rem);
+  outline: none;
+}
+
+.lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: hsl(18 32% 8% / 0.94);
+  backdrop-filter: blur(6px);
+  animation: bookingBackdropIn 400ms ease-out both;
+}
+
+.lightbox__figure {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+}
+
+.lightbox__image {
+  max-width: min(1180px, 100%);
+  /* La légende occupe environ 4 rem : on la réserve, sinon les photos
+     verticales débordent sous le bas de l'écran. */
+  max-height: calc(100vh - 9rem);
+  max-height: calc(100svh - 9rem);
+  object-fit: contain;
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
+}
+
+.lightbox__image--next { animation: lightboxInNext 520ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.lightbox__image--prev { animation: lightboxInPrev 520ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@keyframes lightboxInNext {
+  from { opacity: 0; transform: translateX(38px) scale(0.985); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes lightboxInPrev {
+  from { opacity: 0; transform: translateX(-38px) scale(0.985); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+.lightbox__caption {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: hsl(var(--background) / 0.6);
+  text-align: center;
+  animation: bookingBackdropIn 600ms 200ms ease-out both;
+}
+
+@media (max-width: 767px) {
+  .lightbox__caption {
+    max-width: calc(100vw - 2rem);
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 0.75rem;
+    font-size: 9px;
+    line-height: 1.5;
+    letter-spacing: 0.14em;
+  }
+}
+
+.lightbox__counter {
+  color: hsl(var(--brand));
+  font-variant-numeric: tabular-nums;
+}
+
+.lightbox__close,
+.lightbox__nav {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(var(--background) / 0.75);
+  background: transparent;
+  border: 1px solid hsl(var(--background) / 0.18);
+  transition: color 300ms ease, border-color 300ms ease, background-color 300ms ease;
+}
+
+.lightbox__close:hover,
+.lightbox__nav:hover {
+  color: hsl(var(--background));
+  border-color: hsl(var(--background) / 0.45);
+  background: hsl(var(--background) / 0.08);
+}
+
+.lightbox__close {
+  top: clamp(0.75rem, 3vw, 2rem);
+  right: clamp(0.75rem, 3vw, 2rem);
+  width: 44px;
+  height: 44px;
+}
+
+/* 44 px de côté : la taille minimale confortable pour une cible
+   tactile, sur les flèches comme sur la croix. */
+.lightbox__nav {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 64px;
+}
+
+.lightbox__nav--prev { left: clamp(0.5rem, 2vw, 2rem); }
+.lightbox__nav--next { right: clamp(0.5rem, 2vw, 2rem); }
+
+/* Sur mobile, les flèches latérales mordent sur l'image : on les
+   descend au niveau de la légende, où elles encadrent le compteur. */
+@media (max-width: 640px) {
+  .lightbox__nav {
+    top: auto;
+    bottom: 1rem;
+    transform: none;
+    height: 44px;
+  }
+}
+
+/* Le curseur signale que la vignette s'agrandit. */
+.lightbox-trigger {
+  cursor: zoom-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox__backdrop, .lightbox__image, .lightbox__caption {
+    animation: none;
+  }
+}
+
+/* ── Effets de défilement ─────────────────────────────────────────
+   Gestes repris du site de référence, transposés à notre grammaire
+   visuelle. */
+
+/* 1. Transition de page : fondu SEUL, sans aucune transformation.
+
+      La version précédente ajoutait un `translateY(14px)`. Or un
+      `transform` sur un élément — même réduit à `translateY(0)` une
+      fois l'animation finie — crée un nouveau « bloc conteneur » pour
+      ses descendants : tout ce qu'il contient en `position: fixed`
+      cesse d'être calé sur la FENÊTRE et se retrouve calé sur LUI.
+
+      Ce conteneur enveloppant toutes les pages, et l'en-tête étant à
+      l'intérieur, l'en-tête n'était plus fixe : il défilait avec la
+      page au lieu de rester en haut de l'écran. Le bouton flottant de
+      réservation subissait le même sort.
+
+      `animation-fill-mode: both` aggravait le cas : l'état final était
+      conservé indéfiniment, le transform ne disparaissait donc jamais.
+
+      L'opacité ne crée pas de bloc conteneur : le fondu est conservé,
+      et les éléments fixes redeviennent fixes. */
+@keyframes pageIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.page-transition {
+  animation: pageIn 420ms ease-out both;
+}
+
+/* Voile bref à chaque navigation interne — voir PageTransition.tsx.
+   Un simple passage de teinte, sans logo ni texte : c'est la version
+   « allégée » du rideau d'ouverture, proportionnée à une navigation
+   qui ne recharge rien. `pointer-events: none` sur toute sa durée :
+   il ne doit jamais intercepter un clic sur ce qu'il traverse.
+
+   La montée est quasi immédiate (80 ms) — le voile doit couvrir AVANT
+   que le contenu n'ait fini de changer, sinon on verrait le nouveau
+   contenu apparaître puis se faire voiler après coup, ce qui est
+   l'inverse de l'effet cherché. La sortie est plus lente (370 ms) :
+   c'est elle qui porte la sensation de « page qui se révèle ». */
+@keyframes routeVeilFlash {
+  0%   { opacity: 0; }
+  18%  { opacity: 0.92; }
+  100% { opacity: 0; }
+}
+
+.route-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: hsl(var(--foreground));
+  pointer-events: none;
+  animation: routeVeilFlash 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-veil {
+    display: none;
+  }
+}
+
+/* 2. En-tête qui s'efface en descendant, revient en remontant.
+      C'est le geste qui libère le plus de surface d'image sur les
+      pages éditoriales : on ne lit pas le menu pendant qu'on
+      descend, on le retrouve dès qu'on cherche à naviguer.
+
+      Piloté par une classe posée en JS (useHeaderReveal), pas par
+      une media query : c'est le SENS du défilement qui compte, une
+      information que le CSS seul ne connaît pas. */
+.header-hidden {
+  transform: translateY(-100%);
+}
+
+.header-slide {
+  transition: transform 550ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color 700ms ease,
+              padding 700ms ease,
+              box-shadow 700ms ease;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition {
+    animation: none;
+  }
+  .header-hidden {
+    transform: none;
+  }
+}
+
+/* ── Modale de réservation ────────────────────────────────────────
+   Fond assombri plein écran + carte centrée qui accueille le module
+   de réservation, aux couleurs du site.
+
+   UNE SEULE PROPRIÉTÉ EST ANIMÉE ICI : l'opacité.
+   Ni translation, ni mise à l'échelle, ni déplacement d'aucune sorte.
+   L'iframe Zenchef est calée au pixel sur les coordonnées de la carte
+   (useDockedBookingWidget) : tout ce qui déplace ou redimensionne la
+   carte pendant que le module s'installe le fait trembler. L'opacité,
+   elle, n'affecte pas la mise en page — les coordonnées restent
+   rigoureusement identiques du début à la fin du fondu. C'est la
+   seule façon d'avoir une apparition et une disparition en douceur
+   sans toucher au module.
+
+   Le module lui-même n'est ancré qu'une fois le fondu d'entrée
+   terminé (voir BookingModal.tsx) : il n'est donc jamais visible
+   par-dessus une carte encore translucide. */
+.booking-modal__backdrop,
+.booking-modal__card {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.booking-modal--shown .booking-modal__backdrop,
+.booking-modal--shown .booking-modal__card {
+  opacity: 1;
+}
+
+/* La carte arrive juste après le voile : ce léger décalage suffit à
+   donner une direction à l'ouverture, sans aucun mouvement. */
+.booking-modal--shown .booking-modal__card {
+  transition-duration: 340ms;
+  transition-delay: 60ms;
+}
+
+/* Bouton de fermeture : réaction chromatique, sans aucun mouvement.
+
+   La croix pivotait de 90° au survol. C'était le dernier élément
+   mobile subsistant autour du module de réservation, et un mouvement
+   à cet endroit attire l'œil précisément là où l'on veut du calme.
+
+   À la place, le fond passe du brun soutenu (--brand-strong, 34 % de
+   luminosité) au brun clair (--brand, 58 %). C'est la MÊME teinte :
+   seule la luminosité change, ce qui donne une réaction franche et
+   immédiatement lisible, sans introduire de couleur étrangère à la
+   palette et sans déplacer un seul pixel.
+
+   La croix, elle, passe d'ivoire à brun foncé au survol. Ce n'est pas
+   décoratif : sur le marron clair, une croix ivoire tombe à 2,5:1 de
+   contraste, sous le seuil de lisibilité (4,5:1 pour la norme AA).
+   En foncé elle remonte largement au-dessus. Le bouton s'éclaircit,
+   son symbole s'assombrit — les deux restent nets. */
+.booking-modal-close {
+  transition: background-color 350ms ease, color 350ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .booking-modal__backdrop,
+  .booking-modal__card {
+    transition: none;
+    opacity: 1;
+  }
+}
+
+/* Conservée : la visionneuse s'en sert pour son fond et sa légende. */
+@keyframes bookingBackdropIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (max-width: 767px) {
+  .hero-cta {
+    margin-bottom: 1.75rem;
+  }
+
+  .hero-scroll-ind {
+    bottom: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-fade, .reveal-rise, .gallery-tile img,
+  .reveal-mask, .reveal-mask-left,
+  .lift > *, .reveal-section {
+    transition: none;
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+    filter: none;
+  }
+
+  .hero-ken-burns, .hero-eyebrow, .hero-title,
+  .scroll-rail__line, .hero-divider, .hero-sub, .hero-cta, .hero-scroll-ind {
+    animation: none;
+  }
+
+  .hero-title__word {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .premium-button:hover, .premium-card:hover, .social-link:hover {
+    transform: none;
+  }
+  .booking-loader-mark, .floating-reserve {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* ── Smooth scroll (Lenis) ──────────────────────────────────────
+   Seule règle nécessaire : laisser html/body en hauteur naturelle.
+   On n'importe volontairement pas la feuille de style par défaut de
+   Lenis, qui désactive `pointer-events` sur toutes les iframes — ce
+   qui aurait rendu le widget de réservation Zenchef et la carte
+   Google Maps inutilisables. Ce comportement est géré côté JS via
+   l'option `prevent` (voir src/lib/smoothScroll.ts). */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-brand: hsl(var(--brand));
+  --color-brand-strong: hsl(var(--brand-strong));
+  --color-brand-ink: hsl(var(--brand-ink));
+  --color-brand-strong-ink: hsl(var(--brand-strong-ink));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  /* Paliers d'évolution de la lumière — voir le commentaire dans
+     :root pour le rôle de chacun. */
+  --color-surface-1: hsl(var(--surface-1));
+  --color-surface-2: hsl(var(--surface-2));
+  --color-surface-3: hsl(var(--surface-3));
+
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Bodoni Moda', Georgia, 'Times New Roman', serif;
+  --font-nav: 'Arapey', Georgia, 'Times New Roman', serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+    --background: 30 30% 98%;
+    --foreground: 18 32% 18%;
+    --border: 28 18% 90%;
+  
+  --card: 30 30% 98%;
+  --card-foreground: 18 32% 18%;
+  --card-border: 28 18% 90%;
+  
+  --popover: 30 30% 98%;
+  --popover-foreground: 18 32% 18%;
+  --popover-border: 28 18% 90%;
+  
+  /* Terracotta pour l'accent courant (kickers, icônes, filets) ;
+     caramel, plus clair et plus doré, pour l'accent « fort »
+     (survols, éléments qui doivent ressortir davantage). */
+  --brand: 15 58% 48%;
+  --brand-strong: 33 50% 56%;
+  /* Terracotta foncé pour les petits textes : contraste ≥ 4,5:1. */
+  --brand-ink: 15 58% 39%;
+  /* Or foncé pour les grands chiffres dorés sur fond clair (≥ 3:1). */
+  --brand-strong-ink: 33 46% 37%;
+
+  --primary: 18 32% 18%;
+  --primary-foreground: 30 30% 98%;
+  
+  --secondary: 28 18% 90%;
+  --secondary-foreground: 18 32% 18%;
+  
+  --muted: 30 20% 95%;
+  --muted-foreground: 23 30% 34%;
+  
+  --accent: 33 35% 93%;
+  --accent-foreground: 18 32% 18%;
+  
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --input: 28 18% 90%;
+  --ring: 18 32% 18%;
+
+  /* Paliers de fond resserrés à dessein : même teinte que
+     `--background` (30°), et un écart de LUMINOSITÉ minime d'un
+     palier à l'autre (98 → 97 → 96). Avant, `--surface-3` dérivait
+     vers une teinte différente (30° au lieu de 40°) et une
+     luminosité nettement plus basse (90%) : mis bout à bout, les
+     sections de la page semblaient glisser progressivement de teinte
+     à mesure qu'on descend. Ici, la différence entre deux sections
+     voisines reste perceptible de près (une légère respiration) mais
+     ne se lit plus comme un dégradé continu sur toute la page. */
+  --surface-1: 30 30% 98%;
+  --surface-2: 30 24% 97%;
+  --surface-3: 30 18% 96%;
+
+  --radius: 0.25rem;
+}
+
+.dark {
+  --background: 15 36% 23%;
+  --foreground: 40 20% 94%;
+  --border: 15 20% 30%;
+  
+  --card: 15 30% 20%;
+  --card-foreground: 40 20% 94%;
+  --card-border: 15 20% 30%;
+  
+  --popover: 15 30% 20%;
+  --popover-foreground: 40 20% 94%;
+  --popover-border: 15 20% 30%;
+  
+  --brand: 26 55% 64%;
+  --brand-strong: 31 32% 72%;
+
+  --primary: 40 20% 94%;
+  --primary-foreground: 15 36% 23%;
+  
+  --secondary: 15 20% 28%;
+  --secondary-foreground: 40 20% 94%;
+  
+  --muted: 15 20% 28%;
+  --muted-foreground: 30 15% 65%;
+  
+  --accent: 15 20% 28%;
+  --accent-foreground: 40 20% 94%;
+  
+  --destructive: 0 62% 30%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --input: 15 20% 28%;
+  --ring: 40 20% 94%;
+
+  --surface-1: 15 36% 23%;
+  --surface-2: 15 33% 21.5%;
+  --surface-3: 15 30% 22%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+    /* Un peu d'air sous les titres : les sections gagnent en respiration
+       sans toucher aux paddings de chaque bloc. */
+    text-wrap: balance;
+    /* Arapey est déjà ouverte et un peu large : un interlettrage
+       négatif la resserre aux grandes tailles sans la déformer. */
+    letter-spacing: -0.01em;
+  }
+}
+
+/* ── Grain de papier ────────────────────────────────────────────────
+   Une texture organique et fine posée sur toute la page, fixe par
+   rapport à l'écran (elle ne défile pas avec le contenu — un grain
+   qui bougerait avec la page se remarquerait bien plus qu'un grain
+   immobile, comme un vrai papier sous la lumière).
+
+   `mix-blend-mode: overlay` plutôt qu'une simple opacité sur un calque
+   noir : l'overlay laisse les teintes du fond intactes et ne fait que
+   moduler légèrement la luminosité pixel à pixel, ce qui est
+   exactement l'effet d'un papier texturé sous un éclairage plat —
+   jamais un voile grisâtre posé par-dessus.
+
+   Le carreau (512×512, papier ivoire éditorial — grain fin, micro-
+   fibres, légères taches gris-beige éparses) est répété à sa taille
+   native pour qu'aucune jointure ne se remarque à l'œil nu, et
+   l'opacité reste très basse (5 %) : le grain doit se sentir plus
+   qu'il ne se voit.
+
+   `pointer-events: none` + position fixe SANS z-index élevé arbitraire
+   ne suffiraient pas à le garder discret : c'est surtout son opacité
+   quasi nulle qui garantit qu'il ne gêne jamais la lecture ni les
+   interactions, tout en restant au-dessus de tout le contenu. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  pointer-events: none;
+  background-image: url('/textures/grain.webp');
+  background-repeat: repeat;
+  background-size: 512px 512px;
+  opacity: 0.16;
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::after {
+    opacity: 0.1;
+  }
+}
+
+/* ── Module de réservation : pas de trajet visible ────────────────
+   Le SDK Zenchef injecte son iframe et la peint immédiatement à SA
+   position par défaut — en bas à gauche de l'écran — avant que notre
+   code n'ait pu la déplacer dans la carte de la modale. Le visiteur
+   voyait donc le module apparaître à gauche, puis se déplacer vers le
+   centre : un trajet parasite, à l'ouverture, sur l'élément le plus
+   important de la page.
+
+   L'iframe est donc invisible par défaut, et n'est révélée qu'une
+   fois marquée `data-lts-docked` par useDockedBookingWidget, c'est-à-
+   dire une fois posée au bon endroit. Le fondu de 220 ms lui donne
+   une arrivée nette plutôt qu'une apparition sèche.
+
+   `!important` est nécessaire : le SDK écrit ses propres styles en
+   ligne sur l'iframe, qui l'emporteraient sinon sur cette règle.
+   `pointer-events` suit l'opacité, pour qu'on ne puisse pas cliquer
+   dans un module qu'on ne voit pas encore. */
+iframe[src*="bookings.zenchef.com"]:not([data-lts-docked]) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+iframe[src*="bookings.zenchef.com"][data-lts-docked] {
+  opacity: 1;
+  transition: opacity 220ms ease;
+}
+
+/* ── Écran d'ouverture ────────────────────────────────────────────
+   Voir IntroCurtain.tsx. Un voile sombre, l'emblème au centre, puis
+   un FONDU SIMPLE pour découvrir la page — pas de pans qui
+   s'écartent, pas de zoom : un seul geste, et il ne se remarque pas. */
+.intro-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: hsl(var(--foreground));
+  opacity: 1;
+  transition: opacity 600ms ease;
+  /* Le rideau capte les clics tant qu'il couvre l'écran : sans cela,
+     le clic destiné à l'escamoter atteindrait le lien situé dessous
+     et déclencherait une navigation involontaire. */
+  pointer-events: auto;
+}
+
+.intro-curtain--leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.intro-curtain__mark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.intro-curtain__logo {
+  width: min(320px, 60vw);
+  height: auto;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: introMarkIn 1100ms 150ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Le filet se trace du centre vers ses deux extrémités : le même
+   geste que les filets terracotta du reste du site. */
+.intro-curtain__rule {
+  display: block;
+  width: 84px;
+  height: 1px;
+  /* Ivoire sourdine (la même teinte que `--background`, déjà utilisée
+     pour le sous-titre juste en dessous) plutôt que la couleur de
+     marque : un filet neutre encadre le logo sans lui faire
+     concurrence, là où l'orange, même adouci, restait le premier
+     élément à attirer l'œil sur un fond aussi sombre. */
+  background: hsl(var(--background) / 0.4);
+  transform: scaleX(0);
+  animation: introRuleIn 900ms 650ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.intro-curtain__sub {
+  font-size: 10px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: hsl(var(--background) / 0.55);
+  opacity: 0;
+  animation: introMarkIn 900ms 900ms ease forwards;
+}
+
+@keyframes introMarkIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes introRuleIn {
+  to { transform: scaleX(1); }
+}
+
+/* Mouvement réduit : le composant ne se monte même pas (voir le
+   useState initial), cette règle n'est qu'un filet supplémentaire. */
+@media (prefers-reduced-motion: reduce) {
+  .intro-curtain { display: none; }
+}
+
+/* ── Bouton hamburger animé (menu mobile) ─────────────────────────
+   Trois traits SVG plutôt que trois <div> : même mécanisme de
+   couleur que le globe juste à côté (`currentColor`, piloté par la
+   classe de texte du parent), et un même halo au survol. Au repos :
+   trois traits horizontaux parallèles. Ouvert : le trait du milieu
+   se réduit à rien, les deux autres pivotent à 45° pour se croiser
+   en X.
+
+   `transform-box: fill-box` est indispensable ici : sans lui, une
+   transformation CSS sur un <line> pivote autour de l'origine du
+   viewBox SVG entier, pas autour du centre du trait lui-même.
+
+   Le délai de 90 ms sur les barres 1 et 3 — absent au repos, ajouté
+   seulement à l'ouverture — laisse le trait du milieu commencer à
+   s'effacer avant que les deux autres ne pivotent : sans ce décalage,
+   les trois mouvements simultanés donnent une impression de
+   désordre plutôt qu'une transformation lisible. */
+.toggle-nav__bar {
+  stroke: currentColor;
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 250ms ease;
+}
+
+/* Halo circulaire, discret, qui se pose derrière les trois traits au
+   survol — un cercle plutôt qu'un carré, pour rester dans le
+   vocabulaire rond des autres boutons du site (bouton « remonter »,
+   pastilles sociales). Parti d'une échelle légèrement réduite pour
+   arriver pile à sa taille, jamais l'inverse : un halo qui grossirait
+   depuis zéro se remarquerait comme un « pop », celui-ci s'installe. */
+.toggle-nav {
+  position: relative;
+  border-radius: 9999px;
+}
+
+.toggle-nav::before {
+  content: '';
+  position: absolute;
+  inset: -0.375rem;
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0;
+  transform: scale(0.82);
+  transition: opacity 350ms ease, transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.toggle-nav:hover::before,
+.toggle-nav:focus-visible::before {
+  opacity: 0.08;
+  transform: scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle-nav::before {
+    transition: none;
+  }
+}
+
+.toggle-nav.is-open .toggle-nav__bar--1 {
+  transform: translateY(4px) rotate(45deg);
+}
+
+.toggle-nav.is-open .toggle-nav__bar--3 {
+  transform: translateY(-4px) rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle-nav__bar {
+    transition: none;
+  }
+}
+
+
+
+
+
+/* ── Lenis : défilement amorti sur ordinateur (voir smoothScroll.ts) ── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}

@@ -1,0 +1,473 @@
+/* ═══════════════════════════════════════════════════════════════════
+   v10 — ouverture, ambiance et corrections mobiles.
+
+   Chargée après index.css (voir main.tsx) : ses règles l'emportent.
+   Sommaire :
+     1. Hero : lisibilité de l'en-tête, légendes des photos
+     2. Ambiance « soir » (data-ambiance, voir lib/ambiance.ts)
+     3. Rideau d'ouverture (inspiré de princesayaiza.com)
+     4. Menus : les étincelles s'allument au survol
+     5. Barre de réservation mobile
+     6. Mobile : carrousel, cibles tactiles, longueur de page
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Hero ─────────────────────────────────────────────────────── */
+
+/* Bandeau sombre en haut : l'en-tête (logo, Réserver, menu) reste
+   lisible même sur la Tapisserie, très chargée. */
+.lts-hero2__shade {
+  background:
+    linear-gradient(to bottom, hsl(var(--foreground) / 0.72) 0, hsl(var(--foreground) / 0) 170px),
+    linear-gradient(to bottom, hsl(var(--foreground) / 0.3) 0%, hsl(var(--foreground) / 0.2) 38%, hsl(var(--foreground) / 0.28) 62%, hsl(var(--foreground) / 0.74) 100%);
+}
+/* Titre et sous-titre posés sur une photo chargée : ombre plus
+   franche, sous-titre plus lumineux. */
+.lts-hero-title { text-shadow: 0 2px 34px hsl(var(--foreground) / 0.55); }
+.lts-hero-sub { color: hsl(var(--background) / 0.94); text-shadow: 0 1px 16px hsl(var(--foreground) / 0.75); }
+
+/* Légende de la photo affichée : le lieu, et le crédit. */
+.lts-hero-caption {
+  position: absolute;
+  left: var(--lts-gutter);
+  bottom: calc(clamp(26px, 5vh, 48px) + 26px);
+  z-index: 4;
+  margin: 0;
+  height: 1.4em;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 13px;
+  color: hsl(var(--background) / 0.82);
+  text-shadow: 0 1px 10px hsl(var(--foreground) / 0.7);
+  pointer-events: none;
+}
+.lts-hero-caption span {
+  position: absolute;
+  left: 0;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 900ms ease, transform 900ms var(--reveal-ease);
+}
+.lts-hero-caption span.is-active { opacity: 1; transform: none; transition-delay: 300ms; }
+@media (max-width: 900px) {
+  .lts-hero-caption { left: 20px; right: 20px; bottom: 92px; text-align: center; font-size: 12px; }
+  .lts-hero-caption span { left: 0; right: 0; white-space: normal; }
+}
+
+/* Lueur de bougie : n'existe que le soir. */
+.lts-hero2__candle {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(ellipse 55% 45% at 50% 62%, rgba(255, 170, 90, 0.26), transparent 70%);
+  mix-blend-mode: soft-light;
+  transition: opacity 1.6s ease;
+}
+
+/* ── 2. Ambiance « soir » ───────────────────────────────────────── */
+[data-ambiance='soir'] .lts-hero2__candle { opacity: 1; animation: ltsCandle 3.2s ease-in-out infinite alternate; }
+@keyframes ltsCandle {
+  0% { opacity: 0.85; }
+  35% { opacity: 1; }
+  52% { opacity: 0.78; }
+  70% { opacity: 0.96; }
+  100% { opacity: 0.88; }
+}
+
+/* ── 3. Rideau d'ouverture (inspiré de princesayaiza.com) ───────── */
+/* Court et sobre : le brun de la maison, le logo blanc au centre ; le
+   logo s'efface (0,25 s), puis le fond se dissout (0,8 s). */
+.intro-light {
+  background: hsl(18 34% 11%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  clip-path: none;
+}
+.intro-light__logo {
+  width: clamp(190px, 17vw, 260px);
+  height: auto;
+  opacity: 0;
+  animation: ltsIntroLogoIn 600ms cubic-bezier(0.33, 1, 0.68, 1) 100ms forwards;
+}
+@keyframes ltsIntroLogoIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.intro-light.intro-curtain--lifting {
+  animation: ltsBreathOut 800ms cubic-bezier(0.33, 1, 0.68, 1) 250ms forwards;
+  pointer-events: none;
+}
+@keyframes ltsBreathOut { to { opacity: 0; } }
+.intro-light.intro-curtain--lifting .intro-light__logo { animation: ltsIntroLogoOut 250ms cubic-bezier(0.33, 1, 0.68, 1) forwards; }
+@keyframes ltsIntroLogoOut { from { opacity: 1; } to { opacity: 0; } }
+
+/* Le hero entre pendant que le fond se dissout. */
+.has-intro .lts-hero2 .lts-line__inner,
+.has-intro .lts-hero-sub,
+.has-intro .lts-hero-cta,
+.has-intro .lts-hero2__corner { animation-delay: calc(var(--d, 0ms) + 1300ms); }
+.has-intro .lts-hero2__bg { animation: ltsHeroEnter 2000ms var(--lts-ease) 1100ms both; }
+
+/* ── Logo du pied de page : immobile, cuivré, bien présent ───────── */
+.lts-footer__emblem {
+  position: absolute;
+  right: -4%;
+  bottom: -6%;
+  width: min(640px, 78vw);
+  aspect-ratio: 1;
+  height: auto;
+  opacity: 1;
+  filter: none;
+  pointer-events: none;
+}
+.lts-footer__emblem img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+  filter: saturate(1.2);
+}
+@media (max-width: 767px) {
+  .lts-footer__emblem { width: 92vw; right: -24%; bottom: -4%; }
+  .lts-footer__emblem img { opacity: 0.3; }
+}
+
+/* ── Section « Dînez au cœur d'Angers » ─────────────────────────────
+   Le bloc reste à l'écran par `position: sticky`. Hauteurs en `svh` :
+   elles ne changent pas quand la barre d'adresse du téléphone apparaît
+   ou disparaît (en `vh`, la page se recalculait et sautait). */
+.lts-night__sticky { position: sticky; top: 0; height: 100vh; height: 100svh; }
+@media (max-width: 900px) {
+  .lts-night { height: 150vh; height: 150svh; }
+}
+
+/* ── 4. Menus : les étincelles s'allument au survol ─────────────── */
+@keyframes ltsSpark {
+  0% { opacity: 0.2; transform: scale(0.4) rotate(-40deg); }
+  60% { opacity: 1; transform: scale(1.45) rotate(10deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+@media (hover: hover) {
+  .lts-menus li:hover .lts-spark:not(.lts-spark--dim) {
+    animation: ltsSpark 620ms var(--reveal-ease) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+}
+
+/* ── 6. Mobile ──────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  /* Les trois panneaux « Arriver » : un carrousel horizontal plutôt
+     que trois écrans empilés. Le texte est lisible sans toucher. */
+  .lts-panels {
+    display: flex;
+    grid-template-columns: none;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--lts-gutter);
+    padding-inline: var(--lts-gutter);
+    padding-bottom: 6px;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .lts-panels::-webkit-scrollbar { display: none; }
+  .lts-panel { flex: 0 0 84%; min-height: 0; height: 128vw; max-height: 560px; scroll-snap-align: start; }
+  .lts-panel .lts-panel__reveal { max-height: 260px; opacity: 1; transform: none; }
+  .lts-panel__reveal p { font-size: 13px; }
+
+  .lts-immersion { height: 62vh; }
+}
+
+.lts-swipe-hint { display: none; }
+@media (max-width: 900px) {
+  .lts-swipe-hint {
+    display: block;
+    margin: 14px var(--lts-gutter) 0;
+    font-family: var(--font-sans);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: hsl(var(--foreground) / 0.55);
+  }
+}
+
+/* ── 7. Entrée des panneaux « Arriver » (inspirée de princesayaiza.com) ─
+   Décalés d'une demi-largeur d'écran vers la droite et invisibles tant
+   que la rangée n'est pas à l'écran ; puis ils glissent à leur place en
+   2 s, l'un après l'autre (0,1 s d'écart). `data-armed` n'est posé que
+   si le script tourne : sans lui, rien n'est jamais caché. Le
+   déplacement passe par `translate`, indépendant du `transform` du
+   panneau (zoom au survol). */
+/* En attente : position de départ, posée sans transition. */
+.lts-slide-in[data-armed]:not([data-in]) > .lts-panel {
+  translate: 50vw 0;
+  opacity: 0;
+  transition: none;
+}
+/* Entrée : seule cette étape est animée. */
+.lts-slide-in[data-armed][data-in] > .lts-panel {
+  translate: 0 0;
+  opacity: 1;
+  transition:
+    translate 2000ms cubic-bezier(0.87, 0, 0.13, 1),
+    opacity 2000ms cubic-bezier(0.87, 0, 0.13, 1);
+  transition-delay: calc(var(--i, 0) * 100ms);
+}
+/* Saisir le carrousel (téléphone) : les panneaux reculent légèrement. */
+.lts-slide-in[data-in]:active > .lts-panel { scale: 0.98; transition: scale 600ms cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* ── 8. Producteurs ─────────────────────────────────────────────── */
+.lts-producers { background: hsl(var(--background)); padding: clamp(72px, 9vw, 140px) 0; }
+.lts-producers__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+  gap: clamp(32px, 6vw, 110px);
+  align-items: center;
+}
+.lts-producers__photo { margin: 0; aspect-ratio: 2 / 3; overflow: hidden; box-shadow: 0 24px 60px hsl(var(--foreground) / 0.14); }
+.lts-producers__photo img { width: 100%; height: 100%; object-fit: cover; }
+.lts-producers__list {
+  list-style: none;
+  margin: clamp(28px, 3vw, 40px) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(24px, 3vw, 48px);
+  border-top: 1px solid hsl(var(--foreground) / 0.14);
+}
+.lts-producers__list li {
+  display: grid;
+  gap: 2px;
+  padding: 14px 0;
+  border-bottom: 1px solid hsl(var(--foreground) / 0.1);
+}
+.lts-producers__name { font-family: var(--font-serif); font-size: 17px; line-height: 1.25; color: hsl(var(--foreground)); }
+.lts-producers__detail { font-family: var(--font-serif); font-style: italic; font-size: 14px; color: hsl(var(--brand-strong-ink)); }
+.lts-producers__place { font-family: var(--font-sans); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: hsl(var(--foreground) / 0.6); }
+@media (max-width: 900px) {
+  .lts-producers__grid { grid-template-columns: 1fr; }
+  .lts-producers__photo { max-width: 70%; aspect-ratio: 4 / 5; }
+  .lts-producers__list { grid-template-columns: 1fr; }
+}
+
+/* ── 9. Offrir ──────────────────────────────────────────────────── */
+.lts-gift { background: hsl(var(--secondary) / 0.55); padding: clamp(64px, 8vw, 120px) 0; }
+.lts-gift__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  gap: clamp(32px, 6vw, 110px);
+  align-items: center;
+}
+.lts-gift__photo { aspect-ratio: 740 / 518; overflow: hidden; box-shadow: 0 24px 60px hsl(var(--foreground) / 0.14); }
+.lts-gift__photo img { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 900px) {
+  .lts-gift__grid { grid-template-columns: 1fr; }
+}
+
+/* ── 10. Transition entre les pages : le voile brun et le logo ──────
+   Même couleur et même logo que l'écran d'ouverture, en plus bref. */
+.route-veil {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(18 34% 11%);
+  animation: ltsRouteVeil 900ms cubic-bezier(0.33, 1, 0.68, 1) both;
+}
+@keyframes ltsRouteVeil {
+  0% { opacity: 0; }
+  14% { opacity: 1; }
+  55% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.route-veil__logo {
+  width: clamp(150px, 13vw, 210px);
+  height: auto;
+  opacity: 0;
+  animation: ltsRouteLogo 900ms ease both;
+}
+@keyframes ltsRouteLogo {
+  0%, 12% { opacity: 0; transform: translateY(4px); }
+  30%, 50% { opacity: 1; transform: none; }
+  70%, 100% { opacity: 0; }
+}
+
+/* ── 11. Bandeau cookies plus compact sur téléphone ─────────────────
+   Il couvrait une bonne partie de l'écran d'accueil : texte et marges
+   réduits, emblème masqué, boutons côte à côte. */
+@media (max-width: 640px) {
+  .lts-cookie { padding: 16px 16px 12px; }
+  .lts-cookie__emblem { display: none; }
+  .lts-cookie__title { font-size: 16px; }
+  .lts-cookie__text { margin-top: 8px; font-size: 12px; line-height: 1.55; }
+  .lts-cookie__actions { gap: 8px; }
+  .lts-cookie__btn { padding-block: 11px; font-size: 10px; }
+  .lts-cookie__more { margin-top: 8px; }
+}
+
+/* ── 12. « Quand la lumière se tamise » : photos en couleurs ─────────
+   Elles étaient en noir et blanc jusqu'au survol, donc toujours grises
+   sur téléphone. */
+.lts-tilt__card img,
+.lts-tilt:hover .lts-tilt__card img { filter: none; }
+.lts-tilt__card--2 img { object-position: 50% 50%; }
+/* La bougie est à droite de la photo : sur les cartes étroites, on la garde dans le cadre. */
+.lts-tilt__card--1 img { object-position: 85% 60%; }
+
+/* ── 13. À propos, « Les parcours » : deux polaroïds ────────────────
+   Fanny et Gaëtan, légèrement inclinés, le second décalé vers le bas. La
+   rotation passe par `rotate`, indépendant du `transform` de parallaxe. */
+.lts-duo { display: flex; align-items: flex-start; }
+.lts-duo__card { flex: 1 1 0; min-width: 0; padding: 10px 10px 8px; }
+.lts-duo__card figcaption { padding-top: 10px; }
+.lts-duo__card--1 { rotate: -2.5deg; z-index: 1; }
+.lts-duo__card--2 { rotate: 2deg; margin-left: -8%; margin-top: 16%; z-index: 2; }
+
+/* ── 15. Bouton menu (inspiré d'Hotel Aurelia) ──────────────────────
+   Trois traits fins et égaux, trait de 1,5 ; à l'ouverture, une croix.
+   Le mot « Menu » / « Fermer » seulement à partir de la tablette. */
+.toggle-nav { gap: 12px; }
+.toggle-nav__label {
+  display: none;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+@media (min-width: 768px) { .toggle-nav__label { display: inline; } }
+.toggle-nav__bar { stroke-width: 1.5; stroke-linecap: butt; }
+.toggle-nav__bar--2 { transition: opacity 250ms ease; }
+.toggle-nav.is-open .toggle-nav__bar--1 { transform: translateY(6px) rotate(45deg); }
+.toggle-nav.is-open .toggle-nav__bar--2 { opacity: 0; }
+.toggle-nav.is-open .toggle-nav__bar--3 { transform: translateY(-6px) rotate(-45deg); }
+.toggle-nav::before { display: none; }
+
+/* ── 16. Ornements : lait, thym, sel ─────────────────────────────── */
+.lts-orn { display: inline-flex; align-items: center; gap: 22px; line-height: 0; }
+.lts-orn__svg { display: block; height: auto; fill: none; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
+.lts-orn--copper .lts-orn__svg { stroke: hsl(var(--brand-strong-ink)); }
+.lts-orn--light .lts-orn__svg { stroke: hsl(var(--brand-strong)); }
+.lts-orn__svg--lait { width: 26px; }
+.lts-orn__svg--thym { width: 150px; }
+.lts-orn__svg--sel { width: 38px; }
+.lts-orn--thym .lts-orn__svg--thym { width: 180px; }
+.lts-orn--lait .lts-orn__svg--lait { width: 30px; }
+.lts-orn__dot { width: 4px; height: 4px; border-radius: 50%; background: hsl(var(--brand-strong)); opacity: 0.7; }
+/* Le trait se dessine à l'arrivée à l'écran. */
+.lts-orn__svg path, .lts-orn__svg ellipse {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1600ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+.lts-orn__svg ellipse { transition-duration: 700ms; transition-delay: 900ms; }
+.lts-orn__svg--thym { transition-delay: 0ms; }
+.lts-orn.is-drawn .lts-orn__svg path, .lts-orn.is-drawn .lts-orn__svg ellipse { stroke-dashoffset: 0; }
+.lts-orn--trio .lts-orn__svg--thym path, .lts-orn--trio .lts-orn__svg--thym ellipse { transition-delay: 350ms; }
+.lts-orn--trio .lts-orn__svg--thym ellipse { transition-delay: 1100ms; }
+.lts-orn--trio .lts-orn__svg--sel path { transition-delay: 800ms; }
+/* Dans le menu, l'ornement se redessine à chaque ouverture. */
+.lts-menu:not(.is-open) .lts-orn__svg path, .lts-menu:not(.is-open) .lts-orn__svg ellipse { stroke-dashoffset: 1; transition-duration: 0ms; transition-delay: 0ms; }
+.lts-word__orn { display: flex; align-items: flex-end; height: 56px; margin-bottom: 20px; }
+.lts-word__orn .lts-orn__svg--thym { width: 150px; }
+.lts-word__orn .lts-orn__svg--lait { width: 32px; }
+.lts-word__orn .lts-orn__svg--sel { width: 54px; }
+@media (prefers-reduced-motion: reduce) {
+  .lts-orn__svg path, .lts-orn__svg ellipse { stroke-dashoffset: 0 !important; transition: none !important; }
+}
+
+/* ── 17. Menu plein écran (inspiré de thelargo.com) ──────────────── */
+.lts-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  color: hsl(var(--background));
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 500ms;
+}
+.lts-menu.is-open { opacity: 1; visibility: visible; transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1); }
+.lts-menu__bg {
+  position: absolute;
+  inset: -40px;
+  background: url('/photos/hero-bar-comptoir-960.webp') center / cover no-repeat;
+  filter: blur(18px) saturate(0.9);
+  transform: scale(1.06);
+  transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lts-menu.is-open .lts-menu__bg { transform: scale(1); }
+.lts-menu__veil { position: absolute; inset: 0; background: rgba(20, 13, 10, 0.8); }
+.lts-menu__scroll {
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px 0 48px;
+}
+.lts-menu__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(32px, 6vw, 120px);
+  align-items: start;
+}
+.lts-menu__label {
+  margin: 0 0 clamp(16px, 2.4vw, 32px);
+  font-family: var(--font-serif);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: hsl(var(--background) / 0.5);
+}
+.lts-menu__links { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(10px, 1.6vw, 24px); }
+.lts-menu__link {
+  font-family: var(--font-serif);
+  font-size: clamp(24px, 2.6vw, 36px);
+  line-height: 1.15;
+  color: hsl(var(--background) / 0.94);
+  transition: opacity 300ms ease, color 300ms ease;
+}
+.lts-menu__link:hover { opacity: 0.7; }
+.lts-menu__info { margin: 0; display: grid; gap: clamp(16px, 2.2vw, 34px); }
+.lts-menu__info dt { margin: 0 0 6px; font-family: var(--font-serif); font-size: 15px; color: hsl(var(--background)); }
+.lts-menu__info dd { margin: 0; font-size: 12.5px; line-height: 1.7; color: hsl(var(--background) / 0.78); }
+.lts-menu__info a { color: inherit; }
+.lts-menu__info a:hover { color: hsl(var(--background)); }
+.lts-menu__lang { margin: clamp(24px, 3vw, 40px) 0 0; display: flex; gap: 8px; font-size: 11px; letter-spacing: 0.25em; color: hsl(var(--background) / 0.45); }
+.lts-menu__lang .is-current { color: hsl(var(--background)); }
+.lts-menu__lang a:hover { color: hsl(var(--background)); }
+.lts-menu__orn { display: flex; justify-content: center; margin-top: clamp(40px, 6vh, 72px); }
+/* Cascade d'entrée ; à la fermeture, tout repart sans délai. */
+.lts-menu__item { opacity: 0; transform: translateY(14px); transition: opacity 600ms ease, transform 800ms cubic-bezier(0.22, 1, 0.36, 1); transition-delay: 0ms; }
+.lts-menu.is-open .lts-menu__item { opacity: 1; transform: none; transition-delay: calc(var(--d, 0ms) + 150ms); }
+@media (max-width: 767px) {
+  .lts-menu__grid { grid-template-columns: 1fr; gap: 40px; }
+  .lts-menu__scroll { justify-content: flex-start; padding-top: 136px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lts-menu, .lts-menu__item, .lts-menu__bg { transition: none !important; }
+}
+
+/* Cibles tactiles : 44 px minimum sur écran tactile. */
+@media (pointer: coarse) {
+  .lts-underline,
+  .lts-ghost-btn,
+  .lts-hero-cta,
+  .lts-footer a,
+  .lts-footer button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .toggle-nav { min-width: 44px; min-height: 44px; justify-content: center; }
+}
+
+/* Mouvements réduits : rien ne clignote, rien ne bouge. */
+@media (prefers-reduced-motion: reduce) {
+  .lts-slide-in > .lts-panel { translate: none !important; opacity: 1 !important; transition: none !important; }
+  [data-ambiance='soir'] .lts-hero2__candle { animation: none; }
+  .lts-menus li:hover .lts-spark { animation: none !important; }
+  .lts-hero-caption span { transition: none; }
+}

@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Pas de maximum-scale ni de user-scalable=no : bloquer le zoom
+         rend le site inutilisable pour les personnes malvoyantes et
+         constitue un échec au critère WCAG 1.4.4. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- `js-reveal` autorise l'état caché des éléments qui apparaissent au
+         défilement. Si l'application ne démarre pas dans les 4 s, la classe
+         est retirée : rien ne reste invisible. -->
+    <script>
+      (function () {
+        var d = document.documentElement;
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        d.classList.add('js-reveal');
+        setTimeout(function () { if (!window.__ltsReady) d.classList.remove('js-reveal'); }, 4000);
+      })();
+      /* Accueil : la première image du diaporama est demandée tout de suite,
+         avant le JavaScript (c'était l'élément le plus lent de la page). */
+      (function () {
+        var p = location.pathname.replace(/\/+$/, '');
+        if (p !== '' && p !== '/en') return;
+        var l = document.createElement('link');
+        l.rel = 'preload';
+        l.as = 'image';
+        l.setAttribute('fetchpriority', 'high');
+        l.href = 'https://www.destination-angers.com/app/uploads/destination-angers-tourisme/2024/01/thumbs/La_Tapisserie_de_l_Apocalypse-Copyright-Les_Conteurs-Destination_Angers-4302-1920px-1920x960-crop-1729082096.webp';
+        document.head.appendChild(l);
+      })();
+    </script>
+    <link rel="preconnect" href="https://www.destination-angers.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+
+    <title>LAIT THYM SEL — Restaurant gastronomique à Angers</title>
+
+    <meta
+      name="description"
+      content="Restaurant gastronomique étoilé à Angers, par Fanny et Gaëtan Morvan. Cuisine de saison, produits d'exception. Réservez votre table."
+    />
+
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#513126" />
+
+    <link rel="canonical" href="https://www.laitthymsel.fr/" />
+    <link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/" />
+    <link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en" />
+    <link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/" />
+
+    <!-- Aperçus de partage.
+         Ces balises sont écrites en dur, et pas seulement injectées par
+         React : Facebook, WhatsApp, LinkedIn et Slack lisent le HTML brut
+         sans exécuter le JavaScript. Sans elles, un lien partagé
+         n'afficherait aucun aperçu. -->
+
+    <meta property="og:type" content="restaurant" />
+    <meta property="og:site_name" content="LAIT THYM SEL" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale:alternate" content="en_GB" />
+    <meta property="og:url" content="https://www.laitthymsel.fr/" />
+    <meta
+      property="og:title"
+      content="LAIT THYM SEL — Restaurant gastronomique à Angers"
+    />
+    <meta
+      property="og:description"
+      content="Restaurant gastronomique étoilé à Angers, par Fanny et Gaëtan Morvan. Cuisine de saison, produits d'exception."
+    />
+    <meta
+      property="og:image"
+      content="https://www.laitthymsel.fr/og-image.jpg"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Salle du restaurant LAIT THYM SEL à Angers"
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="LAIT THYM SEL — Restaurant gastronomique à Angers"
+    />
+    <meta
+      name="twitter:description"
+      content="Restaurant gastronomique étoilé à Angers, par Fanny et Gaëtan Morvan."
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.laitthymsel.fr/og-image.jpg"
+    />
+
+    <!-- Icônes servies par le site lui-même : elles étaient chargées
+         depuis l'ancien site WordPress, ce qui rendait l'onglet du
+         navigateur dépendant d'un serveur tiers. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icon-180.png" />
+
+    <!-- Données structurées, également en dur pour être lues sans
+         JavaScript. Pas d'aggregateRating : Google déconseille
+         explicitement une note auto-déclarée sur sa propre fiche, et
+         cela peut entraîner une pénalité manuelle. -->
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "@id": "https://www.laitthymsel.fr/#restaurant",
+        "name": "LAIT THYM SEL",
+        "url": "https://www.laitthymsel.fr/",
+        "description": "Restaurant gastronomique étoilé à Angers, par Fanny et Gaëtan Morvan. Cuisine de saison et produits d'exception.",
+        "image": [
+          "https://www.laitthymsel.fr/og-image.jpg",
+          "https://www.laitthymsel.fr/chefs/dish1.webp"
+        ],
+        "logo": "https://www.laitthymsel.fr/logos/logo-emblem.png",
+        "telephone": "+33789658907",
+        "email": "contact@laitthymsel.fr",
+        "priceRange": "€€€€",
+        "servesCuisine": "Française gastronomique",
+        "currenciesAccepted": "EUR",
+        "acceptsReservations": "https://www.laitthymsel.fr/reservation",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "17 Rue Boisnet",
+          "addressLocality": "Angers",
+          "postalCode": "49100",
+          "addressRegion": "Pays de la Loire",
+          "addressCountry": "FR"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 47.4726,
+          "longitude": -0.5566
+        },
+        "hasMap": "https://www.google.com/maps/search/?api=1&query=LAIT+THYM+SEL,+17+Rue+Boisnet,+49100+Angers",
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Wednesday", "Friday"],
+            "opens": "12:00",
+            "closes": "14:00"
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday"
+            ],
+            "opens": "19:30",
+            "closes": "23:00"
+          }
+        ],
+        "founder": [
+          {
+            "@type": "Person",
+            "name": "Fanny Morvan",
+            "jobTitle": "Cheffe"
+          },
+          {
+            "@type": "Person",
+            "name": "Gaëtan Morvan",
+            "jobTitle": "Chef"
+          }
+        ],
+        "foundingDate": "2017",
+        "sameAs": [
+          "https://www.instagram.com/lait.thym.sel/",
+          "https://www.facebook.com/Lait.Thym.Sel.Restaurant/"
+        ]
+      }
+    </script>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <!-- Aucun script tiers ici : le module de réservation n'est chargé
+         qu'au clic sur « Réserver » (voir src/lib/booking.ts). -->
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://www.laitthymsel.fr/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/"/>
+    <lastmod>2026-08-06</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/en</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/"/>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/reservation</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/reservation"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/reservation"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/reservation"/>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/en/reservation</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/reservation"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/reservation"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/reservation"/>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/menus</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/menus"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/menus"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/menus"/>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/en/menus</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/menus"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/menus"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/menus"/>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/a-propos</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/a-propos"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/a-propos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/a-propos"/>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/en/a-propos</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/a-propos"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/a-propos"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/a-propos"/>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/avis</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/avis"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/avis"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/avis"/>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/en/avis</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/avis"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/avis"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/avis"/>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/contact</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/contact"/>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/en/contact</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/contact"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/contact"/>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/mentions-legales</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/mentions-legales"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/mentions-legales"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/mentions-legales"/>
+    <lastmod>2026-08-07</lastmod>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/en/mentions-legales</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/mentions-legales"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/mentions-legales"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/mentions-legales"/>
+    <lastmod>2026-08-07</lastmod>
+    <priority>0.1</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/rgpd</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/rgpd"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/rgpd"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/rgpd"/>
+    <lastmod>2026-08-07</lastmod>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/en/rgpd</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/rgpd"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/rgpd"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/rgpd"/>
+    <lastmod>2026-08-07</lastmod>
+    <priority>0.1</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/cgu</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/cgu"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/cgu"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/cgu"/>
+    <lastmod>2026-08-07</lastmod>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://www.laitthymsel.fr/en/cgu</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.laitthymsel.fr/cgu"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.laitthymsel.fr/en/cgu"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.laitthymsel.fr/cgu"/>
+    <lastmod>2026-08-07</lastmod>
+    <priority>0.1</priority>
+  </url>
+</urlset>
